@@ -2,7 +2,7 @@
 
 select 
 	customer_state , 
-	count(distinct c.customer_id) as total_customers
+	count(distinct c.customer_unique_id) as total_customers
 from customers c
 join clean_orders co on c.customer_id = co.customer_id
 group by c.customer_state
@@ -24,6 +24,7 @@ order by total_customers desc
 limit 10;
 
 
+
 -- Which customers generated the highest lifetime revenue?(CLV)
 
 select c.customer_unique_id, SUM(co.total_payment) as lifetime_value
@@ -31,6 +32,9 @@ from customers c
 join clean_orders co on c.customer_id = co.customer_id
 group by c.customer_unique_id 
 order by lifetime_value desc
+limit 10;
+
+
 
 -- RFM Customer Segmentation
 with rfm_base as (
@@ -92,7 +96,7 @@ select
 			and m_score >=4 
 		then 'Loyal Customer'
 		when r_score>= 4
-			and f = 1
+			and f_score = 1
 			then 'New Customer'
 		when r_score = 1
 			and f_score >=2
@@ -147,4 +151,5 @@ select
 	count(distinct customer_unique_id) as customers
 from cohort_data 
 group by cohort_month, month_number 
-order by cohort_month, month_number ;
+order by cohort_month, month_number;
+

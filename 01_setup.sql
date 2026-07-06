@@ -23,9 +23,6 @@ where
 group by 1,2,3,4,5,6,7,8,9;
 	
 
-SELECT *
-FROM clean_orders;
-
 
 -- ── ADD ENGLISH CATEGORY NAMES to products ──
 create or replace view products_en as
@@ -36,14 +33,6 @@ from products p
 left join category_translation t
 	on p.product_category_name = t.product_category_name;
 
-SELECT
-    product_category_name,
-    category_en
-FROM products_en
-LIMIT 20;
-
-SELECT COUNT(*), MIN(order_purchase_timestamp), MAX(order_purchase_timestamp)
-FROM clean_orders;
 
 
 

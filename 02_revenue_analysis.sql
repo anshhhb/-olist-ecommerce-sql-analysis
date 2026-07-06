@@ -8,12 +8,12 @@ group by order_status
 order by total_orders DESC ;
 
 
--- "How many orders were placed each month?"
+--How many orders were placed each month?
 
 select
 	to_char( order_purchase_timestamp::timestamp, 'MM-YYYY') as order_month,
 	COUNT(*) as total_orders
-from orders 
+from clean_orders 
 group by to_char( order_purchase_timestamp::timestamp, 'MM-YYYY')
 order by MIN(order_purchase_timestamp::timestamp);
 
@@ -49,7 +49,7 @@ from revenue_with_previous;
 
 -- Top category by revenue
 
-select p.category_en, ROUND(SUM(oi.price + oi.freight_value)) as tot_revenue
+select p.category_en, ROUND(SUM(oi.price + oi.freight_value)::numeric, 2) as tot_revenue
 from clean_orders c 
 join order_items oi on c.order_id = oi.order_id
 join products_en p on oi.product_id = p.product_id
@@ -75,12 +75,14 @@ FROM clean_orders;
 
 
 SELECT 
-    ROUND(SUM(payment_value)::numeric,2) AS total_revenue
-FROM order_payments;
+    ROUND(SUM(total_payment)::numeric,2) AS total_revenue
+FROM clean_orders;
 
 SELECT 
     COUNT(DISTINCT customer_unique_id) AS total_customers
-FROM customers;
+from customers c
+join clean_orders co
+on c.customer_id = co.customer_id;
 
 
 select ROUND(AVG(total_payment):: NUMERIC,2) as AOV
